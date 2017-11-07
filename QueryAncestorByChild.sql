@@ -21,7 +21,7 @@ INSERT IGNORE INTO test.treenodes VALUES
 
 
 /* 5. create function */
-DROP FUNCTION `getAncestor`;
+DROP FUNCTION IF EXISTS `getAncestor`;
 delimiter // 
 CREATE FUNCTION `getAncestor`(id INT)
 RETURNS INT
@@ -34,11 +34,11 @@ BEGIN
     set cid = id;
 
     REPEAT
-        SELECT p.id INTO pid FROM test.treenodes c inner join test.treenodes p on p.id = c.pid where c.id = cid;
+        SELECT p.id INTO pid FROM test.treenodes c INNER JOIN test.treenodes p ON p.id = c.pid WHERE c.id = cid;
         IF NOT done THEN
             SET cid = pid;
         ELSE 
-            SELECT c.pid INTO pid FROM test.treenodes c where c.id = cid;
+            SELECT c.pid INTO pid FROM test.treenodes c WHERE c.id = cid;
         END IF;
     UNTIL done END REPEAT;
     
@@ -49,6 +49,6 @@ END
 /* 6. query */
 SELECT id, nodename, pid, getAncestor(id) FROM test.treenodes;
 
-SELECT id, nodename, pid, getAncestor(id) FROM test.treenodes where id = 1;
+-- SELECT id, nodename, pid, getAncestor(id) FROM test.treenodes where id = 1;
 
 
