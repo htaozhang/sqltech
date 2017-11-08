@@ -33,14 +33,7 @@ begin
     set cur = cast(root as char);
     
     while (cur is not null) do
-        if res is null then
-            set res = '';
-        elseif res = '' then
-            set res = cur;
-        else
-            set res = concat(res, ',', cur);
-        end if;
-        
+        set res = if(res is null, '', if(res = '', cur, concat(res, ',', cur)));
         -- 形参名与字段名重复容易导致死循环
         select group_concat(id) into cur from test.treenodes where find_in_set(pid, cur) > 0;
     end while;
